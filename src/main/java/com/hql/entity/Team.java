@@ -21,11 +21,12 @@ public class Team {
 
     private String country;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name="match_id", nullable=false)
-//    private Match match;
-
-    @OneToMany(mappedBy="team", fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "team_match",
+            joinColumns = { @JoinColumn(name = "team_id") },
+            inverseJoinColumns = { @JoinColumn(name = "match_id") }
+    )
     private List<Match> matches;
 
     @OneToMany(mappedBy="team", fetch = FetchType.EAGER)

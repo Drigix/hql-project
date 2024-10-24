@@ -28,12 +28,8 @@ public class Match {
     @JoinColumn(name="stadium_id", nullable=false)
     private Stadium stadium;
 
-//    @OneToMany(mappedBy="match", fetch = FetchType.EAGER)
-//    private List<Team> teams;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="team_id", nullable = false)
-    private Team team;
+    @ManyToMany(mappedBy="match", fetch = FetchType.EAGER)
+    private List<Team> teams;
 
     @OneToMany(mappedBy="match", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<PlayerMatchPosition> playerMatchPositions;
