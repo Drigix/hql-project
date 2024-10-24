@@ -2,6 +2,9 @@ package com.hql;
 
 import com.hql.dao.StadiumDAO;
 import com.hql.entity.Stadium;
+import com.hql.model.StadiumDTO;
+import com.hql.service.StadiumService;
+import com.hql.service.impl.StadiumServiceImpl;
 import com.hql.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,9 +16,9 @@ import java.util.List;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        StadiumDAO stadiumDAO = new StadiumDAO();
-        List<Stadium> stadiums = stadiumDAO.getAll();
-        for(Stadium stadium: stadiums) {
+        StadiumService stadiumService = new StadiumServiceImpl();
+        List<StadiumDTO> stadiums = stadiumService.findAll();
+        for(StadiumDTO stadium: stadiums) {
             System.out.println(stadium.getName());
         }
     }

@@ -3,9 +3,11 @@ package com.hql.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "person")
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter

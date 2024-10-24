@@ -3,11 +3,13 @@ package com.hql.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Entity
 @Table(name = "stadium")
+@SuperBuilder
 @Getter
 @Setter
 public class Stadium {
@@ -21,6 +23,6 @@ public class Stadium {
 
     private String location;
 
-    @OneToMany(mappedBy="stadium", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="stadium", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Match> matches;
 }

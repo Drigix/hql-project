@@ -3,9 +3,11 @@ package com.hql.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "player_match_position")
+@SuperBuilder
 @Getter
 @Setter
 public class PlayerMatchPosition {
@@ -16,12 +18,13 @@ public class PlayerMatchPosition {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="stadium_id", nullable=false)
+    @JoinColumn(name="player_id", nullable=false)
     private Player player;
 
     @ManyToOne
-    @JoinColumn(name="stadium_id", nullable=false)
+    @JoinColumn(name="match_id", nullable=false)
     private Match match;
 
+    @Enumerated(EnumType.STRING)
     private PositionName position;
 }

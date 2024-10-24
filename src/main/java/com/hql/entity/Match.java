@@ -3,12 +3,14 @@ package com.hql.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "match")
+@SuperBuilder
 @Getter
 @Setter
 public class Match {
@@ -22,14 +24,18 @@ public class Match {
 
     private String result;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="stadium_id", nullable=false)
     private Stadium stadium;
 
-    @OneToMany(mappedBy="match")
-    private List<Team> teams;
+//    @OneToMany(mappedBy="match", fetch = FetchType.EAGER)
+//    private List<Team> teams;
 
-    @OneToMany(mappedBy="match", cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="team_id", nullable = false)
+    private Team team;
+
+    @OneToMany(mappedBy="match", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<PlayerMatchPosition> playerMatchPositions;
 }
 

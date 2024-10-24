@@ -3,11 +3,13 @@ package com.hql.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Entity
 @Table(name = "team")
+@SuperBuilder
 @Getter
 @Setter
 public class Team {
@@ -19,13 +21,16 @@ public class Team {
 
     private String country;
 
-    @ManyToOne
-    @JoinColumn(name="match_id", nullable=false)
-    private Match match;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name="match_id", nullable=false)
+//    private Match match;
 
-    @OneToMany(mappedBy="team")
+    @OneToMany(mappedBy="team", fetch = FetchType.EAGER)
+    private List<Match> matches;
+
+    @OneToMany(mappedBy="team", fetch = FetchType.EAGER)
     private List<Player> players;
 
-    @OneToMany(mappedBy="team")
+    @OneToMany(mappedBy="team", fetch = FetchType.EAGER)
     private List<Coach> coaches;
 }

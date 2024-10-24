@@ -23,12 +23,18 @@
         <property name="hibernate.format_sql">true</property>
 
         <!-- Enable automatic schema generation -->
-        <property name="hibernate.hbm2ddl.auto">none</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Schema name -->
         <property name="hibernate.default_schema">euro</property>
 
         <!-- Annotated class -->
         <mapping class="com.hql.entity.Stadium"/>
+        <mapping class="com.hql.entity.Match"/>
+        <mapping class="com.hql.entity.Team"/>
+        <mapping class="com.hql.entity.Player"/>
+        <mapping class="com.hql.entity.PlayerMatchPosition"/>
+        <mapping class="com.hql.entity.Coach"/>
+        <mapping class="com.hql.entity.Person"/>
     </session-factory>
 </hibernate-configuration>
