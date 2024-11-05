@@ -26,10 +26,18 @@ public class Match {
     @OneToMany(mappedBy = "match", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<PlayerMatchPosition> playerMatchPositions;
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+//    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+//    private Team teamA;
+//
+//    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+//    private Team teamB;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teamA_id", nullable = false)
     private Team teamA;
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teamB_id", nullable = false)
     private Team teamB;
 
     // region GETTERS and SETTERS

@@ -26,7 +26,7 @@
       <property name="hibernate.c3p0.max_size" value="20"/>
 
       <!-- Automatically export the schema -->
-      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
 
       <!-- Show SQL -->
       <property name="hibernate.show_sql" value="true"/>
