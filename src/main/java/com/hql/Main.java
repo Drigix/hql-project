@@ -32,13 +32,13 @@ public class Main {
         dataLoader.loadStadiums();
         dataLoader.playTestMatch();
 
-        MatchService matchService = new MatchServiceImpl();
+        MatchService matchService = new MatchServiceImpl(FACTORY);
         List<Match> matchesWith6Strikers = matchService.findAllByAmountOfStrikers(5, true);
         for(Match match: matchesWith6Strikers) {
             System.out.println("Match with at least 5 strikers: " + match.getTeamA().getCountry() + " vs " + match.getTeamB().getCountry());
         }
 
-        CoachService coachService = new CoachServiceImpl();
+        CoachService coachService = new CoachServiceImpl(FACTORY);
         List<String> coachSecondNames = coachService.findAllSecondNamesByTeamId(1L, true);
         for(String secondName: coachSecondNames) {
             System.out.println("Team 1 coach: " + secondName);

@@ -5,6 +5,8 @@ import com.hql.entities.Match;
 import com.hql.entities.PlayerMatchPosition;
 import com.hql.entities.Team;
 import com.hql.todo.HibernateUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
@@ -14,13 +16,16 @@ import java.util.Objects;
 
 public class MatchDAO extends BaseDAO<Match>{
 
-    public MatchDAO() {
+    private final EntityManagerFactory FACTORY;
+
+    public MatchDAO(EntityManagerFactory FACTORY) {
         super(Match.class);
+        this.FACTORY = FACTORY;
     }
 
     public List<Match> findAllWithAmountStrikers(Integer amount) {
-        try (Session session = HibernateUtil.getSession()) {
-            TypedQuery<Match> query = session.createQuery(
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            TypedQuery<Match> query = entityManager.createQuery(
                     "SELECT m FROM Match m " +
                             "LEFT JOIN PlayerMatchPosition pmp ON m.id = pmp.match.id " +
                             "WHERE pmp.position = 'STRIKER' " +
@@ -34,9 +39,8 @@ public class MatchDAO extends BaseDAO<Match>{
     }
 
     public List<Match> findAllWithAmountStrikersCriteria(Integer amount) {
-        try (Session session = HibernateUtil.getSession()) {
-
-            CriteriaBuilder cb = session.getCriteriaBuilder();
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Match> cr = cb.createQuery(Match.class);
             Root<Match> root = cr.from(Match.class);
             Expression<Long> ce = cb.count(root);
@@ -54,7 +58,7 @@ public class MatchDAO extends BaseDAO<Match>{
             cr.select(root)
                     .where(cb.in(root.get("id")).value(subquery));
 
-            TypedQuery<Match> tq = session.createQuery(cr);
+            TypedQuery<Match> tq = entityManager.createQuery(cr);
             return tq.getResultList();
         }
     }

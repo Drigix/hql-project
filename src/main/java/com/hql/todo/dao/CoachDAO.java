@@ -2,6 +2,8 @@ package com.hql.todo.dao;
 
 import com.hql.entities.Coach;
 import com.hql.todo.HibernateUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -12,13 +14,16 @@ import java.util.List;
 
 public class CoachDAO extends BaseDAO<Coach> {
 
-    public CoachDAO() {
+    private final EntityManagerFactory FACTORY;
+
+    public CoachDAO(EntityManagerFactory FACTORY) {
         super(Coach.class);
+        this.FACTORY = FACTORY;
     }
 
     public List<String> finaAllSecondNamesByTeam(Long teamId) {
-        try (Session session = HibernateUtil.getSession()) {
-            TypedQuery<String> query = session.createQuery(
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            TypedQuery<String> query = entityManager.createQuery(
                     "SELECT c.secondName FROM Coach c WHERE c.team.id = :teamId", String.class
             );
             query.setParameter("teamId", teamId);
@@ -27,14 +32,14 @@ public class CoachDAO extends BaseDAO<Coach> {
     }
 
     public List<String> finaAllSecondNamesByTeamCriteria(Long teamId) {
-        try (Session session = HibernateUtil.getSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<String> cr = cb.createQuery(String.class);
             Root<Coach> root = cr.from(Coach.class);
 
             cr.select(root.get("secondName"))
                     .where(cb.equal(root.get("team").get("id"), teamId));
-            TypedQuery<String> query = session.createQuery(cr);
+            TypedQuery<String> query = entityManager.createQuery(cr);
             return query.getResultList();
         }
     }
