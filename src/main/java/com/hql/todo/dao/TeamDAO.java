@@ -3,6 +3,8 @@ package com.hql.todo.dao;
 import com.hql.entities.Coach;
 import com.hql.entities.Team;
 import com.hql.todo.HibernateUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
@@ -11,8 +13,8 @@ import java.util.List;
 
 public class TeamDAO extends BaseDAO<Team> {
 
-    public TeamDAO() {
-        super(Team.class);
+    public TeamDAO(EntityManagerFactory FACTORY) {
+        super(Team.class, FACTORY);
     }
 
     List<Team> getAllTeamsByCoachAmount(Integer amount) {
@@ -31,9 +33,9 @@ public class TeamDAO extends BaseDAO<Team> {
     }
 
     List<Team> getAllTeamsByCoachAmountCriteria(Integer amount) {
-        try (Session session = HibernateUtil.getSession()) {
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
 
-            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Team> cr = cb.createQuery(Team.class);
             Root<Team> root = cr.from(Team.class);
             Expression<Long> ce = cb.count(root);
@@ -47,7 +49,7 @@ public class TeamDAO extends BaseDAO<Team> {
 
             cr.where(cb.exists(subquery));
 
-            TypedQuery<Team> tq = session.createQuery(cr);
+            TypedQuery<Team> tq = entityManager.createQuery(cr);
             return tq.getResultList();
         }
     }

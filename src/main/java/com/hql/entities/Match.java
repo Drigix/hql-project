@@ -20,24 +20,18 @@ public class Match {
     private String result;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="stadium_id", nullable=false)
+    @JoinColumn(name="stadium_id", nullable=false, foreignKey = @jakarta.persistence.ForeignKey(name = "FK_STADIUM_MATCH"))
     private Stadium stadium;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<PlayerMatchPosition> playerMatchPositions;
 
-//    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-//    private Team teamA;
-//
-//    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-//    private Team teamB;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teamA_id", nullable = false)
+    @JoinColumn(name = "teamA_id", nullable = false, foreignKey = @jakarta.persistence.ForeignKey(name = "FK_TEAM_A_MATCH"))
     private Team teamA;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teamB_id", nullable = false)
+    @JoinColumn(name = "teamB_id", nullable = false, foreignKey = @jakarta.persistence.ForeignKey(name = "FK_TEAM_B_MATCH"))
     private Team teamB;
 
     // region GETTERS and SETTERS

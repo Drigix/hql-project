@@ -1,9 +1,6 @@
 package com.hql.todo.dao;
 
-import com.hql.entities.Coach;
-import com.hql.entities.Match;
-import com.hql.entities.PlayerMatchPosition;
-import com.hql.entities.Team;
+import com.hql.entities.*;
 import com.hql.todo.HibernateUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -14,22 +11,50 @@ import org.hibernate.Session;
 import java.util.List;
 import java.util.Objects;
 
-public class MatchDAO extends BaseDAO<Match>{
-
-    private final EntityManagerFactory FACTORY;
+public class MatchDAO extends BaseDAO<Match> {
 
     public MatchDAO(EntityManagerFactory FACTORY) {
-        super(Match.class);
-        this.FACTORY = FACTORY;
+        super(Match.class, FACTORY);
+    }
+
+    public long countMatchPlayers(Integer matchId) {
+        try (EntityManager entityManager = FACTORY.createEntityManager()) {
+            TypedQuery<Long> query = entityManager.createQuery(
+                    "SELECT COUNT(pmp) FROM Match m " +
+                            "JOIN m.playerMatchPositions pmp " +
+                            "WHERE :matchId = pmp.match.id",
+                    Long.class
+            );
+            query.setParameter("matchId", matchId);
+            return query.getSingleResult();
+        }
+    }
+
+    public long countMatchPlayersCriteria(Integer matchId) {
+        try (EntityManager entityManager = FACTORY.createEntityManager()) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+
+            // Define roots and joins
+            Root<Match> matchRoot = cq.from(Match.class);
+            Join<Match, PlayerMatchPosition> pmpJoin = matchRoot.join("playerMatchPositions");
+
+            // Create the selection and where clause
+            cq.select(cb.count(pmpJoin))
+                    .where(cb.equal(pmpJoin.get("match").get("id"), matchId));
+
+            TypedQuery<Long> query = entityManager.createQuery(cq);
+            return query.getSingleResult();
+        }
     }
 
     public List<Match> findAllWithAmountStrikers(Integer amount) {
-        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+        try (EntityManager entityManager = FACTORY.createEntityManager()) {
             TypedQuery<Match> query = entityManager.createQuery(
                     "SELECT m FROM Match m " +
-                            "LEFT JOIN PlayerMatchPosition pmp ON m.id = pmp.match.id " +
+                            "JOIN m.playerMatchPositions pmp " +
                             "WHERE pmp.position = 'STRIKER' " +
-                            "GROUP BY m.id " +
+                            "GROUP BY m " +
                             "HAVING COUNT(pmp) >= :amount",
                     Match.class
             );
@@ -39,7 +64,7 @@ public class MatchDAO extends BaseDAO<Match>{
     }
 
     public List<Match> findAllWithAmountStrikersCriteria(Integer amount) {
-        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+        try (EntityManager entityManager = FACTORY.createEntityManager()) {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Match> cr = cb.createQuery(Match.class);
             Root<Match> root = cr.from(Match.class);

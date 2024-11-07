@@ -15,11 +15,11 @@ public class PlayerMatchPosition implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="PLAYER_ID", nullable=false)
+    @JoinColumn(name="PLAYER_ID", nullable=false, foreignKey = @jakarta.persistence.ForeignKey(name = "FK_PLAYER_PLAYER_MATCH_POSITIONS"))
     private Player player;
 
     @ManyToOne()
-    @JoinColumn(name="MATCH_ID", nullable=false)
+    @JoinColumn(name="MATCH_ID", nullable=false, foreignKey = @jakarta.persistence.ForeignKey(name = "FK_MATCH_PLAYER_MATCH_POSITIONS"))
     private Match match;
 
     @Enumerated(EnumType.STRING)

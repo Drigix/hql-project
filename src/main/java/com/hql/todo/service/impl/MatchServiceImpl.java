@@ -21,4 +21,11 @@ public class MatchServiceImpl implements MatchService {
                 matchDAO.findAllWithAmountStrikersCriteria(amount) :
                 matchDAO.findAllWithAmountStrikers(amount);
     }
+
+    @Override
+    public long countMatchPlayers(Integer matchId, boolean useCriteria) {
+        return useCriteria ?
+                matchDAO.countMatchPlayersCriteria(matchId):
+                matchDAO.countMatchPlayers(matchId);
+    }
 }

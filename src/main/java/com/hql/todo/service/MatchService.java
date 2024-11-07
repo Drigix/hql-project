@@ -7,4 +7,5 @@ import java.util.List;
 public interface MatchService {
 
     List<Match> findAllByAmountOfStrikers(Integer amount, boolean useCriteria);
+    long countMatchPlayers(Integer matchId, boolean useCriteria);
 }

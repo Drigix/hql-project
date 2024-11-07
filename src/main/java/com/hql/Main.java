@@ -33,15 +33,19 @@ public class Main {
         dataLoader.playTestMatch();
 
         MatchService matchService = new MatchServiceImpl(FACTORY);
-        List<Match> matchesWith6Strikers = matchService.findAllByAmountOfStrikers(5, true);
+        List<Match> matchesWith6Strikers = matchService.findAllByAmountOfStrikers(5, false);
         for(Match match: matchesWith6Strikers) {
             System.out.println("Match with at least 5 strikers: " + match.getTeamA().getCountry() + " vs " + match.getTeamB().getCountry());
         }
 
         CoachService coachService = new CoachServiceImpl(FACTORY);
-        List<String> coachSecondNames = coachService.findAllSecondNamesByTeamId(1L, true);
+        List<String> coachSecondNames = coachService.findAllSecondNamesByTeamId(1L, false);
         for(String secondName: coachSecondNames) {
             System.out.println("Team 1 coach: " + secondName);
         }
+
+
+        long count = matchService.countMatchPlayers(3, true);
+        System.out.printf("###################### PRINT MATCH PLAYER COUNT: %d ######################%n", count);
     }
 }

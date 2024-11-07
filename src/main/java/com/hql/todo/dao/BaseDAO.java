@@ -1,23 +1,26 @@
 package com.hql.todo.dao;
 
-import com.hql.todo.HibernateUtil;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.List;
 
 public abstract class BaseDAO<T> {
     private final Class<T> clazz;
+    protected final EntityManagerFactory FACTORY;
 
-    protected BaseDAO(Class<T> clazz) {
+    protected BaseDAO(Class<T> clazz, EntityManagerFactory FACTORY) {
         this.clazz = clazz;
+        this.FACTORY = FACTORY;
     }
 
     public void save(T entity) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
-            transaction = session.beginTransaction();
-            session.save(entity);
+        EntityTransaction transaction = null;
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(entity);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -28,22 +31,23 @@ public abstract class BaseDAO<T> {
     }
 
     public T getById(Long id) {
-        try (Session session = HibernateUtil.getSession()) {
-            return session.get(clazz, id);
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            return entityManager.find(clazz, id);
         }
     }
 
     public List<T> getAll() {
-        try (Session session = HibernateUtil.getSession()) {
-            return session.createQuery("from " + clazz.getName(), clazz).list();
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            return entityManager.createQuery("from " + clazz.getName(), clazz).getResultList();
         }
     }
 
     public void update(T entity) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
-            transaction = session.beginTransaction();
-            session.update(entity);
+        EntityTransaction transaction = null;
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.merge(entity);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -54,10 +58,11 @@ public abstract class BaseDAO<T> {
     }
 
     public void delete(T entity) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
-            transaction = session.beginTransaction();
-            session.delete(entity);
+        EntityTransaction transaction = null;
+        try(EntityManager entityManager = FACTORY.createEntityManager()) {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entity);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

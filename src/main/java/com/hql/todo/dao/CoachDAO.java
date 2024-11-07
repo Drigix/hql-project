@@ -14,11 +14,8 @@ import java.util.List;
 
 public class CoachDAO extends BaseDAO<Coach> {
 
-    private final EntityManagerFactory FACTORY;
-
     public CoachDAO(EntityManagerFactory FACTORY) {
-        super(Coach.class);
-        this.FACTORY = FACTORY;
+        super(Coach.class, FACTORY);
     }
 
     public List<String> finaAllSecondNamesByTeam(Long teamId) {

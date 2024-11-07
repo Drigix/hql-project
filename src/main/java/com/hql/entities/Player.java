@@ -14,8 +14,7 @@ public class Player extends Person implements Serializable {
     @JoinColumn(name="TEAM_ID", foreignKey = @jakarta.persistence.ForeignKey(name = "FK_PLAYER_TEAM"))
     private Team team;
 
-    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
-    @OneToMany(mappedBy="player", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="player", fetch = FetchType.EAGER)
     private List<PlayerMatchPosition> playerMatchPositions;
 
     public Player() {
