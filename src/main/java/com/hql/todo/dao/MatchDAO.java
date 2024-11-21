@@ -19,11 +19,10 @@ public class MatchDAO extends BaseDAO<Match> {
 
     public long countMatchPlayers(Integer matchId) {
         try (EntityManager entityManager = FACTORY.createEntityManager()) {
-            TypedQuery<Long> query = entityManager.createQuery(
-                    "SELECT COUNT(pmp) FROM Match m " +
-                            "JOIN m.playerMatchPositions pmp " +
-                            "WHERE :matchId = pmp.match.id",
-                    Long.class
+            TypedQuery<Integer> query = entityManager.createQuery(
+                    "SELECT size(m.playerMatchPositions) FROM Match m " +
+                            "WHERE :matchId = m.id",
+                    Integer.class
             );
             query.setParameter("matchId", matchId);
             return query.getSingleResult();
@@ -35,13 +34,9 @@ public class MatchDAO extends BaseDAO<Match> {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 
-            // Define roots and joins
             Root<Match> matchRoot = cq.from(Match.class);
-            Join<Match, PlayerMatchPosition> pmpJoin = matchRoot.join("playerMatchPositions");
-
-            // Create the selection and where clause
-            cq.select(cb.count(pmpJoin))
-                    .where(cb.equal(pmpJoin.get("match").get("id"), matchId));
+            cq.select(cb.count(matchRoot.join("playerMatchPositions")))
+                    .where(cb.equal(matchRoot.get("id"), matchId));
 
             TypedQuery<Long> query = entityManager.createQuery(cq);
             return query.getSingleResult();
